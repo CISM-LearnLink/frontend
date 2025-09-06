@@ -98,7 +98,7 @@ const TutorCard = ({ tutor }) => {
                         <div className="d-flex align-items-center">
                             <span className="badge bg-primary me-2">{tutor.completedBookings} sessions</span>
                             <span className="badge bg-warning text-dark">
-                                {tutor.averageRating ? tutor.averageRating.toFixed(1) : 'N/A'} ★
+                                {tutor.averageRating ? tutor.averageRating.toFixed(1) : '0'} ★
                             </span>
                         </div>
                     </div>
@@ -165,7 +165,7 @@ const AdminActivity = () => {
                         <p className="text-secondary lead">Monitor platform performance, user engagement, and key metrics over time.</p>
                     </div>
                     <div className="col-md-4 text-md-end">
-                        <Link to="/admin/dashboard" className="btn btn-lg btn-outline-primary rounded-pill shadow-sm">
+                        <Link to="/dashboard" className="btn btn-lg btn-outline-primary rounded-pill shadow-sm">
                            <i className="bi bi-arrow-left me-2"></i> Back to Dashboard
                         </Link>
                     </div>

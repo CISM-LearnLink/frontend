@@ -87,10 +87,10 @@ function TutorLogin({ setUser }) {
             <span className="mx-2 text-secondary">Or</span>
             <div style={{ flex: 1, height: 1, background: '#e0e0e0' }} />
           </div>
-          <button type="button" className="btn w-100 fw-bold mb-2 d-flex align-items-center justify-content-center" style={{ background: '#111', color: '#fff', fontSize: 17, borderRadius: 8 }}>
+          {/* <button type="button" className="btn w-100 fw-bold mb-2 d-flex align-items-center justify-content-center" style={{ background: '#111', color: '#fff', fontSize: 17, borderRadius: 8 }}>
           <i className="bi bi-google me-2" style={{ fontSize: 20 }}></i>
             CONTINUE WITH GOOGLE
-          </button>
+          </button> */}
           <div className="text-center mt-3 text-secondary" style={{ fontSize: 15 }}>
             Don't have an account? <a href="/register/tutor" className="text-info fw-bold text-decoration-none">Sign up as Tutor</a> | <a href="/register/parent" className="text-info fw-bold text-decoration-none">Sign up as Student</a>
           </div>

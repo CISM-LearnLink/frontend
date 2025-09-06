@@ -35,7 +35,7 @@ const TutorCard = ({ tutor, onClick, bookmarks = [], onBookmark }) => {
             subjectImage = tutor.subjectImage;
         }
     }
-    
+
     // Handle profile image URL - if it's a local upload, prepend server URL
     let profileImage = studentsImg; // default fallback
     if (tutor.profileImage) {
@@ -45,12 +45,12 @@ const TutorCard = ({ tutor, onClick, bookmarks = [], onBookmark }) => {
             profileImage = tutor.profileImage;
         }
     }
-    
+
     const subjectName = subjectObj.name || tutor.subjectName || 'Subject';
     // Use subject-specific hourlyRate if available
     const hourlyRate = tutor.hourlyRate !== undefined ? tutor.hourlyRate : subjectObj.hourlyRate;
     const bookmarked = isBookmarked(bookmarks, tutor._id, subjectObj._id);
-    
+
     const handleBookmarkClick = (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -59,7 +59,7 @@ const TutorCard = ({ tutor, onClick, bookmarks = [], onBookmark }) => {
             onBookmark(tutor._id, subjectObj._id);
         }
     };
-    
+
     return (
         <div className="card tutor-card shadow-sm border-0 rounded-4 mb-3" style={{ cursor: 'default', minWidth: 320, maxWidth: 350 }}>
             {/* Subject Image Banner */}
@@ -75,15 +75,15 @@ const TutorCard = ({ tutor, onClick, bookmarks = [], onBookmark }) => {
                     style={{ position: 'absolute', top: 12, right: 16, background: 'rgba(255,255,255,0.8)', borderRadius: '50%', padding: 6, zIndex: 2, cursor: 'pointer' }}
                     onClick={handleBookmarkClick}
                 >
-                    <i 
-                        className={`bi ${bookmarked ? 'bi-bookmark-fill' : 'bi-bookmark'}`} 
+                    <i
+                        className={`bi ${bookmarked ? 'bi-bookmark-fill' : 'bi-bookmark'}`}
                         style={{ fontSize: 22, color: '#2DB8A1' }}
                     ></i>
                 </div>
                 {/* Tutor profile image */}
-                <img 
+                <img
                     src={profileImage}
-                    alt={tutor.name} 
+                    alt={tutor.name}
                     className="rounded-circle"
                     style={{ width: 64, height: 64, border: '3px solid #fff', position: 'absolute', left: 20, bottom: -10, objectFit: 'cover', background: '#fff' }}
                 />
@@ -110,12 +110,12 @@ const TutorCard = ({ tutor, onClick, bookmarks = [], onBookmark }) => {
                     <i className="bi bi-currency-rupee" style={{ color: '#2DB8A1', fontSize: 16 }}></i>
                     <span className="text-secondary small">Rs. {hourlyRate || '2500'}/hr</span>
                 </div>
-                <button 
-                    className="btn w-100 rounded-3 fw-bold" 
-                    style={{ 
-                        background: '#2DE1C2', 
-                        color: '#fff', 
-                        fontSize: 17, 
+                <button
+                    className="btn w-100 rounded-3 fw-bold"
+                    style={{
+                        background: '#2DE1C2',
+                        color: '#fff',
+                        fontSize: 17,
                         cursor: 'pointer',
                         position: 'relative',
                         zIndex: 10,
@@ -144,7 +144,7 @@ const SubjectCategoryCard = ({ subject, onClick, tutorsCount }) => {
             subjectImage = subject.imageUrl;
         }
     }
-    
+
     return (
         <div className="col-md-2 col-6 mb-4">
             <div className="card subject-category-card text-center p-0 rounded-3 border-0 shadow-sm h-100" style={{ cursor: 'pointer', overflow: 'hidden' }} onClick={onClick}>
@@ -157,7 +157,7 @@ const SubjectCategoryCard = ({ subject, onClick, tutorsCount }) => {
                     />
                 </div>
                 <div className="p-3">
-                <h6 className="fw-bold mb-1">{subject.name}</h6>
+                    <h6 className="fw-bold mb-1">{subject.name}</h6>
                     <small className="text-secondary">{tutorsCount} Tutors</small>
                 </div>
             </div>
@@ -198,7 +198,7 @@ const HorizontalScroll = ({ children, title, showSeeAllButton = true, seeAllLink
 
     return (
         <section className="py-4">
-            <div className="card border-0 shadow-sm rounded-4" style={{ 
+            <div className="card border-0 shadow-sm rounded-4" style={{
                 backgroundColor: 'rgba(255, 255, 255, 0.95)',
                 backdropFilter: 'blur(10px)'
             }}>
@@ -211,10 +211,10 @@ const HorizontalScroll = ({ children, title, showSeeAllButton = true, seeAllLink
                             </Link>
                         )}
                     </div>
-                    <div 
+                    <div
                         ref={scrollRef}
-                        className="d-flex overflow-auto pb-3 horizontal-scroll-container" 
-                        style={{ 
+                        className="d-flex overflow-auto pb-3 horizontal-scroll-container"
+                        style={{
                             gap: 24
                         }}
                         onMouseDown={handleMouseDown}
@@ -286,16 +286,18 @@ const ParentDashboard = ({ user }) => {
                 const token = localStorage.getItem('token');
                 const headers = { 'Authorization': token ? `Bearer ${token}` : '' };
 
-                const [dashboardRes, subjectsRes, latestRes, topRes] = await Promise.all([
+                const [dashboardRes, subjectsRes, latestRes, topRes, Subjects] = await Promise.all([
                     fetch(`${import.meta.env.VITE_API_URL}/api/parent/dashboard`, { headers }),
-                    fetch(SUBJECTS_API, { headers }),
+                    fetch(`${import.meta.env.VITE_API_URL}/api/parent/subjects-with-counts`, { headers }),
                     fetch(`${import.meta.env.VITE_API_URL}/api/parent/search-tutors?limit=4&sortBy=date`, { headers }),
                     fetch(`${import.meta.env.VITE_API_URL}/api/parent/search-tutors?limit=4&sortBy=rating`, { headers })
+
                 ]);
 
                 const dashboardData = await dashboardRes.json();
                 const subjectsData = await subjectsRes.json();
                 const latestData = await latestRes.json();
+                console.log("latest data", latestData);
                 const topData = await topRes.json();
 
                 if (dashboardData.success) {
@@ -320,6 +322,7 @@ const ParentDashboard = ({ user }) => {
                 if (topData.success) {
                     setTopTutors(topData.data.tutors || []);
                 }
+
             } catch (err) {
                 setInitialError('An error occurred while fetching initial data.');
             }
@@ -338,7 +341,7 @@ const ParentDashboard = ({ user }) => {
                 });
                 const data = await res.json();
                 if (data.success) setBookmarks(data.data || []);
-            } catch (err) {}
+            } catch (err) { }
         };
         fetchBookmarks();
     }, []);
@@ -346,38 +349,38 @@ const ParentDashboard = ({ user }) => {
     // --- MULTI-FILTER SEARCH HANDLER ---
     const handleSearch = async (e) => {
         if (e) e.preventDefault();
-            setIsSearching(true);
-            setSearchError(null);
-            try {
-                const token = localStorage.getItem('token');
-                const params = new URLSearchParams();
+        setIsSearching(true);
+        setSearchError(null);
+        try {
+            const token = localStorage.getItem('token');
+            const params = new URLSearchParams();
             if (filterName) params.append('name', filterName);
             if (filterLocation) params.append('location', filterLocation);
             if (filterSubject) params.append('subject', filterSubject);
             if (filterRating) params.append('rating', filterRating);
-                    if (minRate) params.append('minRate', minRate);
-                    if (maxRate) params.append('maxRate', maxRate);
-                params.append('limit', 50);
-                const res = await fetch(`${API_URL}?${params.toString()}`, {
-                    headers: { 'Authorization': token ? `Bearer ${token}` : '' },
-                });
-                const data = await res.json();
-                if (data.success) {
-                    setSearchedTutors(data.data.tutors);
-                } else {
-                    setSearchError(data.message || 'Failed to fetch tutors');
-                }
-            } catch (err) {
-                setSearchError('Failed to fetch tutors');
+            if (minRate) params.append('minRate', minRate);
+            if (maxRate) params.append('maxRate', maxRate);
+            params.append('limit', 50);
+            const res = await fetch(`${API_URL}?${params.toString()}`, {
+                headers: { 'Authorization': token ? `Bearer ${token}` : '' },
+            });
+            const data = await res.json();
+            if (data.success) {
+                setSearchedTutors(data.data.tutors);
+            } else {
+                setSearchError(data.message || 'Failed to fetch tutors');
             }
-            setIsSearching(false);
-        };
+        } catch (err) {
+            setSearchError('Failed to fetch tutors');
+        }
+        setIsSearching(false);
+    };
 
     // --- HANDLERS ---
-    
+
     const goToProfile = (tutorId, subjectId) => navigate(`/parent/tutor/${tutorId}/subject/${subjectId}`);
     const handleSubjectClick = (subjectId) => navigate(`/subjects/${subjectId}`);
-    
+
     const handleRateRangeChange = (newRange) => {
         setRateRange(newRange);
         setMinRate(newRange[0].toString());
@@ -413,7 +416,7 @@ const ParentDashboard = ({ user }) => {
     // Google Calendar connect handler
     const handleGoogleConnect = () => {
         console.log('User prop:', user);
-        
+
         // Check if user exists and has an ID
         if (!user) {
             Swal.fire({
@@ -424,7 +427,7 @@ const ParentDashboard = ({ user }) => {
             });
             return;
         }
-        
+
         // Check for different possible ID fields
         const userId = user.id || user._id;
         if (!userId) {
@@ -437,7 +440,7 @@ const ParentDashboard = ({ user }) => {
             });
             return;
         }
-        
+
         console.log('Connecting Google Calendar for user ID:', userId);
         window.location.href = `${import.meta.env.VITE_API_URL}/api/google/auth/${userId}`;
     };
@@ -454,9 +457,9 @@ const ParentDashboard = ({ user }) => {
                 },
                 body: JSON.stringify({ tutorId, subjectId })
             });
-            
+
             const data = await response.json();
-            
+
             if (data.success) {
                 // Refresh bookmarks
                 const res = await fetch(`${import.meta.env.VITE_API_URL}/api/parent/bookmarks`, {
@@ -465,13 +468,13 @@ const ParentDashboard = ({ user }) => {
                 const bookmarksData = await res.json();
                 if (bookmarksData.success) {
                     setBookmarks(bookmarksData.data || []);
-                    
+
                     // Show success message
-                    const isBookmarked = bookmarksData.data.some(b => 
-                        b.tutorId && b.tutorId._id === tutorId && 
+                    const isBookmarked = bookmarksData.data.some(b =>
+                        b.tutorId && b.tutorId._id === tutorId &&
                         b.subjectId && b.subjectId._id === subjectId
                     );
-                    
+
                     Swal.fire({
                         icon: 'success',
                         title: isBookmarked ? 'Bookmarked!' : 'Removed from bookmarks',
@@ -501,30 +504,30 @@ const ParentDashboard = ({ user }) => {
     };
 
     return (
-        <div style={{ 
-            backgroundColor: '#7ee3f2', 
+        <div style={{
+            backgroundColor: '#7ee3f2',
             minHeight: '100vh',
             position: 'relative',
             overflow: 'hidden'
         }}>
             {/* Background Images */}
-            <img src={groupImg} alt="clouds" style={{ 
-                position: 'absolute', 
-                top: 0, 
-                left: 0, 
-                width: '100%', 
-                maxWidth: '100vw', 
-                zIndex: 0, 
-                pointerEvents: 'none' 
+            <img src={groupImg} alt="clouds" style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                maxWidth: '100vw',
+                zIndex: 0,
+                pointerEvents: 'none'
             }} />
-            <img src={objectImg} alt="buildings" style={{ 
-                position: 'absolute', 
-                bottom: 0, 
-                left: 0, 
-                width: '100%', 
-                maxWidth: '100vw', 
-                zIndex: 0, 
-                pointerEvents: 'none' 
+            <img src={objectImg} alt="buildings" style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                width: '100%',
+                maxWidth: '100vw',
+                zIndex: 0,
+                pointerEvents: 'none'
             }} />
 
             {/* Main Content */}
@@ -534,8 +537,8 @@ const ParentDashboard = ({ user }) => {
                     <div className="d-flex justify-content-end mb-3">
                         <button
                             className="btn btn-outline-primary fw-bold d-flex align-items-center"
-                            style={{ 
-                                borderRadius: 8, 
+                            style={{
+                                borderRadius: 8,
                                 fontSize: 16,
                                 backgroundColor: 'rgba(255, 255, 255, 0.9)',
                                 borderColor: '#14b8a6',
@@ -549,7 +552,7 @@ const ParentDashboard = ({ user }) => {
                     </div>
 
                     {/* Quick Actions Section */}
-                    <div className="card border-0 shadow-sm rounded-4 mb-4" style={{ 
+                    <div className="card border-0 shadow-sm rounded-4 mb-4" style={{
                         backgroundColor: 'rgba(255, 255, 255, 0.95)',
                         backdropFilter: 'blur(10px)'
                     }}>
@@ -560,8 +563,8 @@ const ParentDashboard = ({ user }) => {
                             </h4>
                             <div className="row g-3">
                                 <div className="col-md-3 col-sm-6">
-                                    <Link to="/parent/bookings" className="btn w-100" style={{ 
-                                        backgroundColor: '#14b8a6', 
+                                    <Link to="/parent/bookings" className="btn w-100" style={{
+                                        backgroundColor: '#14b8a6',
                                         color: '#fff',
                                         borderRadius: 8,
                                         border: 'none'
@@ -570,8 +573,8 @@ const ParentDashboard = ({ user }) => {
                                     </Link>
                                 </div>
                                 <div className="col-md-3 col-sm-6">
-                                    <Link to="/parent/waitlist" className="btn w-100" style={{ 
-                                        backgroundColor: '#14b8a6', 
+                                    <Link to="/parent/waitlist" className="btn w-100" style={{
+                                        backgroundColor: '#14b8a6',
                                         color: '#fff',
                                         borderRadius: 8,
                                         border: 'none'
@@ -580,8 +583,8 @@ const ParentDashboard = ({ user }) => {
                                     </Link>
                                 </div>
                                 <div className="col-md-3 col-sm-6">
-                                    <Link to="/parent/bookmarks" className="btn w-100" style={{ 
-                                        backgroundColor: '#14b8a6', 
+                                    <Link to="/parent/bookmarks" className="btn w-100" style={{
+                                        backgroundColor: '#14b8a6',
                                         color: '#fff',
                                         borderRadius: 8,
                                         border: 'none'
@@ -589,7 +592,7 @@ const ParentDashboard = ({ user }) => {
                                         <i className="bi bi-bookmark me-2"></i>Bookmarks
                                     </Link>
                                 </div>
-                                <div className="col-md-3 col-sm-6">
+                                {/* <div className="col-md-3 col-sm-6">
                                     <Link to="/parent/messages" className="btn w-100" style={{ 
                                         backgroundColor: '#14b8a6', 
                                         color: '#fff',
@@ -598,10 +601,10 @@ const ParentDashboard = ({ user }) => {
                                     }}>
                                         <i className="bi bi-chat-dots me-2"></i>Messages
                                     </Link>
-                                </div>
+                                </div> */}
                                 <div className="col-md-3 col-sm-6">
-                                    <Link to="/parent/disputes" className="btn w-100" style={{ 
-                                        backgroundColor: '#14b8a6', 
+                                    <Link to="/parent/disputes" className="btn w-100" style={{
+                                        backgroundColor: '#14b8a6',
                                         color: '#fff',
                                         borderRadius: 8,
                                         border: 'none'
@@ -614,7 +617,7 @@ const ParentDashboard = ({ user }) => {
                     </div>
 
                     {/* Multi-Filter Panel */}
-                    <section className="text-center py-5 mb-4 rounded-4" style={{ 
+                    <section className="text-center py-5 mb-4 rounded-4" style={{
                         background: 'rgba(255, 255, 255, 0.95)',
                         backdropFilter: 'blur(10px)',
                         border: '2px solid rgba(20, 184, 166, 0.2)',
@@ -622,35 +625,35 @@ const ParentDashboard = ({ user }) => {
                         overflow: 'hidden'
                     }}>
                         {/* Background Images for the card */}
-                        <img src={groupImg} alt="clouds" style={{ 
-                            position: 'absolute', 
-                            top: 10, 
-                            left: 10, 
-                            width: '120px', 
+                        <img src={groupImg} alt="clouds" style={{
+                            position: 'absolute',
+                            top: 10,
+                            left: 10,
+                            width: '120px',
                             height: 'auto',
                             opacity: 0.4,
                             zIndex: 0,
                             pointerEvents: 'none'
                         }} />
-                        <img src={objectImg} alt="buildings" style={{ 
-                            position: 'absolute', 
-                            bottom: 10, 
-                            right: 10, 
-                            width: '100px', 
+                        <img src={objectImg} alt="buildings" style={{
+                            position: 'absolute',
+                            bottom: 10,
+                            right: 10,
+                            width: '100px',
                             height: 'auto',
                             opacity: 0.3,
                             zIndex: 0,
                             pointerEvents: 'none'
                         }} />
-                        
+
                         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
                             <h1 className="display-5 fw-bold" style={{ color: '#14b8a6' }}>#Find Your Tutor With Ease</h1>
                             <p className="lead col-lg-8 mx-auto" style={{ color: '#666' }}>Set any combination of filters to find the perfect tutor.</p>
                             <form className="" onSubmit={handleSearch}>
                                 <div className="row justify-content-center mb-3">
                                     <div className="col-md-8 col-12">
-                                        <input type="text" className="form-control form-control-lg" placeholder="Search by tutor name..." value={filterName} onChange={e => setFilterName(e.target.value)} style={{ 
-                                            borderRadius: 12, 
+                                        <input type="text" className="form-control form-control-lg" placeholder="Search by tutor name..." value={filterName} onChange={e => setFilterName(e.target.value)} style={{
+                                            borderRadius: 12,
                                             fontSize: 20,
                                             border: '2px solid #e2e8f0',
                                             backgroundColor: 'rgba(255, 255, 255, 0.9)'
@@ -682,7 +685,7 @@ const ParentDashboard = ({ user }) => {
                                             backgroundColor: 'rgba(255, 255, 255, 0.9)'
                                         }}>
                                             <option value="">Min rating</option>
-                                            {[5,4,3,2,1].map(r => <option key={r} value={r}>{r} Star{r>1 && 's'} & up</option>)}
+                                            {[5, 4, 3, 2, 1].map(r => <option key={r} value={r}>{r} Star{r > 1 && 's'} & up</option>)}
                                         </select>
                                     </div>
                                     <div className="col-md-3 col-12">
@@ -703,7 +706,7 @@ const ParentDashboard = ({ user }) => {
                                                 transform: 'translateY(-50%)',
                                                 zIndex: 1
                                             }}></div>
-                                            
+
                                             {/* Active range track */}
                                             <div style={{
                                                 position: 'absolute',
@@ -716,7 +719,7 @@ const ParentDashboard = ({ user }) => {
                                                 right: `${100 - (rateRange[1] / 20000) * 100}%`,
                                                 zIndex: 1
                                             }}></div>
-                                            
+
                                             {/* Min range input - left side only */}
                                             <input
                                                 type="range"
@@ -742,7 +745,7 @@ const ParentDashboard = ({ user }) => {
                                                     padding: 0
                                                 }}
                                             />
-                                            
+
                                             {/* Max range input - right side only */}
                                             <input
                                                 type="range"
@@ -771,10 +774,10 @@ const ParentDashboard = ({ user }) => {
                                         </div>
                                     </div>
                                     <div className="col-md-3 col-12">
-                                        <button className="btn w-100 fw-bold py-2" type="submit" style={{ 
-                                            backgroundColor: '#14b8a6', 
-                                            color: '#fff', 
-                                            borderRadius: 8, 
+                                        <button className="btn w-100 fw-bold py-2" type="submit" style={{
+                                            backgroundColor: '#14b8a6',
+                                            color: '#fff',
+                                            borderRadius: 8,
                                             fontSize: 18,
                                             border: 'none'
                                         }}>Search</button>
@@ -783,11 +786,11 @@ const ParentDashboard = ({ user }) => {
                             </form>
                         </div>
                     </section>
-                    
+
                     {/* Search Results Section - Moved to top */}
                     {(isSearching || searchError || searchedTutors.length > 0) && (
                         <section className="mb-5">
-                            <div className="card border-0 shadow-sm rounded-4" style={{ 
+                            <div className="card border-0 shadow-sm rounded-4" style={{
                                 backgroundColor: 'rgba(255, 255, 255, 0.95)',
                                 backdropFilter: 'blur(10px)'
                             }}>
@@ -812,9 +815,9 @@ const ParentDashboard = ({ user }) => {
                                     ) : searchedTutors.length === 0 ? (
                                         <div className="text-secondary text-center p-5">No tutors found matching your criteria.</div>
                                     ) : (
-                                        <div 
-                                            className="d-flex overflow-auto pb-3 horizontal-scroll-container" 
-                                            style={{ 
+                                        <div
+                                            className="d-flex overflow-auto pb-3 horizontal-scroll-container"
+                                            style={{
                                                 gap: 24
                                             }}
                                             onMouseDown={(e) => {
@@ -823,7 +826,7 @@ const ParentDashboard = ({ user }) => {
                                                 const startX = e.pageX - scrollRef.offsetLeft;
                                                 const scrollLeft = scrollRef.scrollLeft;
                                                 scrollRef.style.cursor = 'grabbing';
-                                                
+
                                                 const handleMouseMove = (e) => {
                                                     if (!isDragging) return;
                                                     e.preventDefault();
@@ -831,24 +834,24 @@ const ParentDashboard = ({ user }) => {
                                                     const walk = (x - startX) * 2;
                                                     scrollRef.scrollLeft = scrollLeft - walk;
                                                 };
-                                                
+
                                                 const handleMouseUp = () => {
                                                     scrollRef.style.cursor = 'grab';
                                                     document.removeEventListener('mousemove', handleMouseMove);
                                                     document.removeEventListener('mouseup', handleMouseUp);
                                                 };
-                                                
+
                                                 document.addEventListener('mousemove', handleMouseMove);
                                                 document.addEventListener('mouseup', handleMouseUp);
                                             }}
                                         >
                                             {flattenTutorsBySubject(searchedTutors).map((tutor, i) => (
                                                 <div key={`${tutor._id}-${tutor.subject?._id || tutor.subjectId || i}`} style={{ flex: '0 0 285px' }}>
-                                                    <TutorCard 
-                                                        tutor={tutor} 
-                                                        onClick={() => goToProfile(tutor._id, tutor.subject?._id)} 
-                                                        bookmarks={bookmarks} 
-                                                        onBookmark={handleBookmark} 
+                                                    <TutorCard
+                                                        tutor={tutor}
+                                                        onClick={() => goToProfile(tutor._id, tutor.subject?._id)}
+                                                        bookmarks={bookmarks}
+                                                        onBookmark={handleBookmark}
                                                     />
                                                 </div>
                                             ))}
@@ -858,10 +861,10 @@ const ParentDashboard = ({ user }) => {
                             </div>
                         </section>
                     )}
-                    
+
                     {/* Recommended Tutors Section - Based on Child's Preferred Subjects */}
                     <section className="py-4">
-                        <div className="card border-0 shadow-sm rounded-4" style={{ 
+                        <div className="card border-0 shadow-sm rounded-4" style={{
                             backgroundColor: 'rgba(255, 255, 255, 0.95)',
                             backdropFilter: 'blur(10px)'
                         }}>
@@ -882,9 +885,9 @@ const ParentDashboard = ({ user }) => {
                                         No recommended tutors found. Please update your child's preferred subjects in your profile.
                                     </div>
                                 ) : (
-                                    <div 
-                                        className="d-flex overflow-auto pb-3 horizontal-scroll-container" 
-                                        style={{ 
+                                    <div
+                                        className="d-flex overflow-auto pb-3 horizontal-scroll-container"
+                                        style={{
                                             gap: 24
                                         }}
                                         onMouseDown={(e) => {
@@ -893,7 +896,7 @@ const ParentDashboard = ({ user }) => {
                                             const startX = e.pageX - scrollRef.offsetLeft;
                                             const scrollLeft = scrollRef.scrollLeft;
                                             scrollRef.style.cursor = 'grabbing';
-                                            
+
                                             const handleMouseMove = (e) => {
                                                 if (!isDragging) return;
                                                 e.preventDefault();
@@ -901,24 +904,24 @@ const ParentDashboard = ({ user }) => {
                                                 const walk = (x - startX) * 2;
                                                 scrollRef.scrollLeft = scrollLeft - walk;
                                             };
-                                            
+
                                             const handleMouseUp = () => {
                                                 scrollRef.style.cursor = 'grab';
                                                 document.removeEventListener('mousemove', handleMouseMove);
                                                 document.removeEventListener('mouseup', handleMouseUp);
                                             };
-                                            
+
                                             document.addEventListener('mousemove', handleMouseMove);
                                             document.addEventListener('mouseup', handleMouseUp);
                                         }}
                                     >
                                         {flattenTutorsBySubject(recommendedTutors).map((tutor, i) => (
                                             <div key={`${tutor._id}-${tutor.subject?._id || tutor.subjectId || i}`} style={{ flex: '0 0 285px' }}>
-                                                <TutorCard 
-                                                    tutor={tutor} 
-                                                    onClick={() => goToProfile(tutor._id, tutor.subject?._id)} 
-                                                    bookmarks={bookmarks} 
-                                                    onBookmark={handleBookmark} 
+                                                <TutorCard
+                                                    tutor={tutor}
+                                                    onClick={() => goToProfile(tutor._id, tutor.subject?._id)}
+                                                    bookmarks={bookmarks}
+                                                    onBookmark={handleBookmark}
                                                 />
                                             </div>
                                         ))}
@@ -927,7 +930,7 @@ const ParentDashboard = ({ user }) => {
                             </div>
                         </div>
                     </section>
-                    
+
                     {/* Latest Tutors Section */}
                     <HorizontalScroll title="Latest Tutors" seeAllLink="/parent/search-tutors?sortBy=date">
                         {latestTutors.length === 0 ? (
@@ -953,13 +956,13 @@ const ParentDashboard = ({ user }) => {
                                 // Find the subject entry for this subjectId to get the title
                                 const subjectEntry = (tutor.subjects || []).find(s => s.subject && (s.subject._id === subject._id || s.subject._id === subject.id));
                                 const subjectWithTitle = { ...subject, title: subjectEntry?.title };
-                                
+
                                 // Handle image URL for the subject
                                 let subjectImage = subject.imageUrl;
                                 if (subjectImage && subjectImage.startsWith('/uploads/')) {
                                     subjectImage = `${import.meta.env.VITE_API_URL}${subjectImage}`;
                                 }
-                                
+
                                 return (
                                     <div key={`${tutor._id}-${subject._id || subject.id || i}`} style={{ flex: '0 0 285px' }}>
                                         <TutorCard
@@ -999,13 +1002,13 @@ const ParentDashboard = ({ user }) => {
                                 // Find the subject entry for this subjectId to get the title
                                 const subjectEntry = (tutor.subjects || []).find(s => s.subject && (s.subject._id === subject._id));
                                 const subjectWithTitle = { ...subject, title: subjectEntry?.title };
-                                
+
                                 // Handle image URL for the subject
                                 let subjectImage = subject.imageUrl;
                                 if (subjectImage && subjectImage.startsWith('/uploads/')) {
                                     subjectImage = `${import.meta.env.VITE_API_URL}${subjectImage}`;
                                 }
-                                
+
                                 return (
                                     <div key={`${tutor._id}-${subject._id || i}`} style={{ flex: '0 0 285px' }}>
                                         <TutorCard tutor={{ ...tutor, subject: subjectWithTitle, subjectId: subject._id, subjectImage: subjectImage, hourlyRate: subjectEntry?.hourlyRate }} onClick={() => goToProfile(tutor._id, subject._id)} bookmarks={bookmarks} onBookmark={handleBookmark} />
@@ -1017,40 +1020,32 @@ const ParentDashboard = ({ user }) => {
 
                     {/* Initial Content (Carousels & Categories) */}
                     {initialLoading ? (
-                         <div className="d-flex justify-content-center p-5">
-                             <div className="spinner-border" style={{color: '#14b8a6'}} role="status">
-                                 <span className="visually-hidden">Loading...</span>
-                             </div>
-                         </div>
+                        <div className="d-flex justify-content-center p-5">
+                            <div className="spinner-border" style={{ color: '#14b8a6' }} role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
                     ) : initialError ? (
                         <div className="alert alert-danger" style={{ backgroundColor: 'rgba(220, 53, 69, 0.1)', borderColor: '#dc3545', color: '#dc3545' }}>{initialError}</div>
                     ) : (
                         <>
+                            {/* Subject Categories Section */}
                             <section className="py-4">
-                                <div className="card border-0 shadow-sm rounded-4" style={{ 
+                                <div className="card border-0 shadow-sm rounded-4" style={{
                                     backgroundColor: 'rgba(255, 255, 255, 0.95)',
                                     backdropFilter: 'blur(10px)'
                                 }}>
                                     <div className="card-body p-4">
                                         <h2 className="fw-bold fs-4 mb-3" style={{ color: '#14b8a6' }}>Subject categories</h2>
                                         <div className="row">
-                                            {subjects.slice(0, 12).map(subject => {
-                                                // Count tutors for this subject
-                                                let tutorsCount = 0;
-                                                if (Array.isArray(subject.tutorIds) && subject.tutorIds.length > 0) {
-                                                    tutorsCount = subject.tutorIds.length;
-                                                } else if (carouselTutors && carouselTutors.length > 0) {
-                                                    const subjectIdStr = String(subject._id);
-                                                    tutorsCount = carouselTutors.filter(tutor =>
-                                                        Array.isArray(tutor.subjects) && tutor.subjects.some(s => {
-                                                            if (!s.subject) return false;
-                                                            const sId = typeof s.subject === 'object' ? String(s.subject._id) : String(s.subject);
-                                                            return sId === subjectIdStr;
-                                                        })
-                                                    ).length;
-                                                }
-                                                return <SubjectCategoryCard key={subject._id} subject={subject} onClick={() => handleSubjectClick(subject._id)} tutorsCount={tutorsCount} />;
-                                            })}
+                                            {subjects.slice(0, 12).map(subject => (
+                                                <SubjectCategoryCard
+                                                    key={subject._id}
+                                                    subject={subject}
+                                                    onClick={() => handleSubjectClick(subject._id)}
+                                                    tutorsCount={subject.tutorsCount || 0}
+                                                />
+                                            ))}
                                         </div>
                                     </div>
                                 </div>

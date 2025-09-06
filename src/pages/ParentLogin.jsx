@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -20,6 +20,10 @@ function parseJwt(token) {
     return null;
   }
 }
+const handleGoogleLogin = () => {
+  // Redirect to your backend Google login endpoint
+  window.location.href = `${API_BASE_URL}/api/google/login`;
+};
 
 function ParentLogin({ setUser }) {
   const [email, setEmail] = useState('');
@@ -60,7 +64,34 @@ function ParentLogin({ setUser }) {
       setError(err.response?.data?.msg || 'Login failed');
     }
   };
-
+  useEffect(() => {
+  // Check if Google redirected back with a token
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get('token');
+  const error = urlParams.get('error');
+  
+  if (token) {
+    setLoading(true);
+    localStorage.setItem('token', token);
+    
+    // You can either decode the token or fetch user data from backend
+    const decoded = parseJwt(token);
+    if (decoded && decoded.userId) {
+      // Simple approach: just use data from the token
+      localStorage.setItem('user', JSON.stringify(decoded));
+      if (setUser) setUser(decoded);
+      
+      // Redirect to dashboard
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 500);
+    }
+  }
+  
+  if (error) {
+    setError('Google login failed. Please try again.');
+  }
+}, [navigate, setUser]);
   return (
     <div className="login-root" style={{ minHeight: '100vh', background: '#fff', display: 'flex' }}>
       {/* Left Side: blob.png as background, students.png centered */}
@@ -90,10 +121,16 @@ function ParentLogin({ setUser }) {
             <span className="mx-2 text-secondary">Or</span>
             <div style={{ flex: 1, height: 1, background: '#e0e0e0' }} />
           </div>
-          <button type="button" className="btn w-100 fw-bold mb-2 d-flex align-items-center justify-content-center" style={{ background: '#111', color: '#fff', fontSize: 17, borderRadius: 8 }}>
-          <i className="bi bi-google me-2" style={{ fontSize: 20 }}></i>
-            CONTINUE WITH GOOGLE
-          </button>
+          {/* <button
+            type="button"
+            className="btn w-100 fw-bold mb-2 d-flex align-items-center justify-content-center"
+            style={{ background: '#111', color: '#fff', fontSize: 17, borderRadius: 8 }}
+            onClick={handleGoogleLogin}
+            disabled={loading}
+          >
+            <i className="bi bi-google me-2" style={{ fontSize: 20 }}></i>
+            {loading ? 'Redirecting...' : 'CONTINUE WITH GOOGLE'}
+          </button> */}
           <div className="text-center mt-3 text-secondary" style={{ fontSize: 15 }}>
             Don't have an account? <a href="/register/parent" className="text-info fw-bold text-decoration-none">Sign up as Student</a> | <a href="/register/tutor" className="text-info fw-bold text-decoration-none">Sign up as Tutor</a>
           </div>

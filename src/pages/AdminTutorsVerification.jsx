@@ -334,7 +334,7 @@ const AdminTutorsVerification = () => {
                         <p className="text-secondary lead">Review and approve pending tutor applications to maintain platform quality.</p>
                     </div>
                     <div className="col-md-4 text-md-end">
-                        <Link to="/admin/dashboard" className="btn btn-lg btn-outline-primary rounded-pill shadow-sm">
+                        <Link to="/dashboard" className="btn btn-lg btn-outline-primary rounded-pill shadow-sm">
                            <i className="bi bi-arrow-left me-2"></i> Back to Dashboard
                         </Link>
                     </div>
@@ -440,7 +440,7 @@ const AdminTutorsVerification = () => {
                                 <i className="bi bi-check-circle display-1 text-success mb-3"></i>
                                 <h4 className="fw-bold mb-2">No Pending Verifications</h4>
                                 <p className="text-secondary">All tutor applications have been reviewed. Great job!</p>
-                                <Link to="/admin/dashboard" className="btn btn-primary rounded-pill">
+                                <Link to="/dashboard" className="btn btn-primary rounded-pill">
                                     <i className="bi bi-arrow-left me-2"></i>Back to Dashboard
                                 </Link>
                             </div>

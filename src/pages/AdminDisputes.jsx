@@ -415,7 +415,7 @@ const AdminDisputes = () => {
                         <p className="text-secondary lead">Resolve conflicts between parents and tutors to maintain platform harmony.</p>
                     </div>
                     <div className="col-md-4 text-md-end">
-                        <Link to="/admin/dashboard" className="btn btn-lg btn-outline-primary rounded-pill shadow-sm">
+                        <Link to="/dashboard" className="btn btn-lg btn-outline-primary rounded-pill shadow-sm">
                            <i className="bi bi-arrow-left me-2"></i> Back to Dashboard
                         </Link>
                     </div>

@@ -12,21 +12,6 @@ const SEND_API = `${import.meta.env.VITE_API_URL}/api/tutor/message`;
 const AVATAR_PLACEHOLDER = 'https://ui-avatars.com/api/?background=ced4da&color=fff&size=128&name=';
 
 
-// --- Reusable Components ---
-const AppHeader = () => (
-    <header className="bg-white shadow-sm sticky-top">
-        <nav className="container navbar navbar-expand-lg navbar-light">
-          <Link className="navbar-brand fw-bold" style={{ color: '#2DB8A1' }} to="/tutor/dashboard">LearnLink</Link>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto">
-              <li className="nav-item"><Link className="nav-link" to="/tutor/dashboard">Dashboard</Link></li>
-              <li className="nav-item"><Link className="nav-link active fw-bold" to="/tutor/messages">Messages</Link></li>
-            </ul>
-          </div>
-        </nav>
-    </header>
-);
-// --- End Reusable Components ---
 
 function TutorMessages() {
   const { parentId: initialParentId } = useParams();

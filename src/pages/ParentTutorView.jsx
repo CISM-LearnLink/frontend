@@ -43,57 +43,6 @@ const tutorData = {
 };
 // --- End Mock Data ---
 
-// Reusable Header Component
-const AppHeader = () => (
-    <header className="bg-white shadow-sm sticky-top">
-        <nav className="container navbar navbar-expand-lg navbar-light">
-          <Link className="navbar-brand fw-bold" style={{ color: '#2DB8A1' }} to="/">LearnLink</Link>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav mx-auto">
-              <li className="nav-item"><Link className="nav-link" to="/">Home</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/companies">Companies</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/students">Students</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/e-souvenir">E-Souvenir</Link></li>
-            </ul>
-            <div className="d-flex">
-              <Link to="/tutor-login" className="btn btn-outline-secondary btn-sm me-2">Tutor Login</Link>
-              <Link to="/student-login" className="btn btn-primary btn-sm" style={{ backgroundColor: '#2DB8A1', borderColor: '#2DB8A1' }}>Student Login</Link>
-            </div>
-          </div>
-        </nav>
-    </header>
-);
-
-// Reusable Footer Component
-const AppFooter = () => (
-    <footer className="bg-dark text-white pt-5 pb-4">
-        <div className="container text-center text-md-start">
-            <div className="row">
-                <div className="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
-                    <h5 className="text-uppercase mb-4 fw-bold" style={{ color: '#2DB8A1' }}>LearnLink</h5>
-                    <p>Connecting students with the best tutors to achieve academic excellence.</p>
-                </div>
-                <div className="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
-                    <h6 className="text-uppercase mb-4 fw-bold">Resources</h6>
-                    <p><a href="#!" className="text-white-50 text-decoration-none">Help Center</a></p>
-                </div>
-                <div className="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
-                    <h6 className="text-uppercase mb-4 fw-bold">Company</h6>
-                    <p><a href="#!" className="text-white-50 text-decoration-none">About Us</a></p>
-                </div>
-                <div className="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
-                    <h6 className="text-uppercase mb-4 fw-bold">Follow Us</h6>
-                    <a href="#" className="btn btn-floating m-1" style={{backgroundColor: '#3b5998'}} role="button"><i className="bi bi-facebook"></i></a>
-                    <a href="#" className="btn btn-floating m-1" style={{backgroundColor: '#55acee'}} role="button"><i className="bi bi-twitter"></i></a>
-                    <a href="#" className="btn btn-floating m-1" style={{backgroundColor: '#ac2bac'}} role="button"><i className="bi bi-instagram"></i></a>
-                </div>
-            </div>
-        </div>
-    </footer>
-);
 
 
 const ParentTutorView = () => {

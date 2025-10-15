@@ -286,7 +286,7 @@ const ParentDashboard = ({ user }) => {
                 const token = localStorage.getItem('token');
                 const headers = { 'Authorization': token ? `Bearer ${token}` : '' };
 
-                const [dashboardRes, subjectsRes, latestRes, topRes, Subjects] = await Promise.all([
+                const [dashboardRes, subjectsRes, latestRes, topRes] = await Promise.all([
                     fetch(`${import.meta.env.VITE_API_URL}/api/parent/dashboard`, { headers }),
                     fetch(`${import.meta.env.VITE_API_URL}/api/parent/subjects-with-counts`, { headers }),
                     fetch(`${import.meta.env.VITE_API_URL}/api/parent/search-tutors?limit=4&sortBy=date`, { headers }),

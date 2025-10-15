@@ -11,57 +11,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Footer from '../components/Footer';
 
-// Reusable Header Component
-const AppHeader = () => (
-    <header className="bg-white shadow-sm sticky-top">
-        <nav className="container navbar navbar-expand-lg navbar-light">
-          <Link className="navbar-brand fw-bold" style={{ color: '#2DB8A1' }} to="/">LearnLink</Link>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav mx-auto">
-              <li className="nav-item"><Link className="nav-link" to="/">Home</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/companies">Companies</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/students">Students</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/e-souvenir">E-Souvenir</Link></li>
-            </ul>
-            <div className="d-flex">
-              <Link to="/tutor-login" className="btn btn-outline-secondary btn-sm me-2">Tutor Login</Link>
-              <Link to="/student-login" className="btn btn-primary btn-sm" style={{ backgroundColor: '#2DB8A1', borderColor: '#2DB8A1' }}>Student Login</Link>
-            </div>
-          </div>
-        </nav>
-    </header>
-);
 
-// Reusable Footer Component
-const AppFooter = () => (
-    <footer className="bg-dark text-white pt-5 pb-4">
-        <div className="container text-center text-md-start">
-            <div className="row">
-                <div className="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
-                    <h5 className="text-uppercase mb-4 fw-bold" style={{ color: '#2DB8A1' }}>LearnLink</h5>
-                    <p>Connecting students with the best tutors to achieve academic excellence.</p>
-                </div>
-                <div className="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
-                    <h6 className="text-uppercase mb-4 fw-bold">Resources</h6>
-                    <p><a href="#!" className="text-white-50 text-decoration-none">Help Center</a></p>
-                </div>
-                <div className="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
-                    <h6 className="text-uppercase mb-4 fw-bold">Company</h6>
-                    <p><a href="#!" className="text-white-50 text-decoration-none">About Us</a></p>
-                </div>
-                <div className="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
-                    <h6 className="text-uppercase mb-4 fw-bold">Follow Us</h6>
-                    <a href="#" className="btn btn-floating m-1" style={{backgroundColor: '#3b5998'}} role="button"><i className="bi bi-facebook"></i></a>
-                    <a href="#" className="btn btn-floating m-1" style={{backgroundColor: '#55acee'}} role="button"><i className="bi bi-twitter"></i></a>
-                    <a href="#" className="btn btn-floating m-1" style={{backgroundColor: '#ac2bac'}} role="button"><i className="bi bi-instagram"></i></a>
-                </div>
-            </div>
-        </div>
-    </footer>
-);
 
 const SimilarTutorCard = ({ tutor }) => (
     <div className="card tutor-card shadow-sm border-0 rounded-4 mb-3" style={{ 
@@ -84,7 +34,7 @@ const SimilarTutorCard = ({ tutor }) => (
                 src={tutor.profileImage ? (tutor.profileImage.startsWith('/uploads/') ? `${import.meta.env.VITE_API_URL}${tutor.profileImage}` : tutor.profileImage) : studentsImg}
                 alt={tutor.name}
                 className="rounded-circle"
-                style={{ width: 64, height: 64, border: '3px solid #fff', position: 'absolute', left: 20, bottom: -32, objectFit: 'cover', background: '#fff' }}
+                style={{ width: 64, height: 64, border: '3px solid #fff', position: 'absolute', left: 20, bottom: -6, objectFit: 'cover', background: '#fff' }}
             />
         </div>
         <div className="card-body pt-5 pb-3 px-4">
@@ -112,6 +62,7 @@ const SimilarTutorCard = ({ tutor }) => (
 const ParentTutorProfile = () => {
     // All hooks at the top
     const { tutorId, subjectId } = useParams();
+    console.log("subjectId", subjectId);
     const navigate = useNavigate();
     const [tutor, setTutor] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -138,6 +89,7 @@ const ParentTutorProfile = () => {
                     headers: { 'Authorization': token ? `Bearer ${token}` : '' },
                 });
                 const data = await res.json();
+                console.log("data", data);
                 if (data.success) {
                     setTutor(data.data);
                 } else {
@@ -229,6 +181,7 @@ const ParentTutorProfile = () => {
     // Merge the title from the subject entry into the subject object
     const subjectTitle = selectedSubjectEntry && selectedSubjectEntry.title;
     const selectedSubjectWithTitle = { ...selectedSubject, title: subjectTitle };
+    console.log("selectedSubjectWithTitle", selectedSubjectWithTitle);
     let subjectImage = blobImg; // default fallback
     if (selectedSubjectWithTitle.imageUrl) {
         if (selectedSubjectWithTitle.imageUrl.startsWith('/uploads/')) {
@@ -331,7 +284,7 @@ const ParentTutorProfile = () => {
                     {/* Left Column: Main Content */}
                     <div className="col-lg-8">
                         {/* Title, Location, Rate */}
-                        <h2 className="fw-bold mb-2" style={{ fontSize: 32, color: '#14b8a6' }}>{selectedSubjectWithTitle.title || tutor.description || 'Online Mathematics classes for students island wide'}</h2>
+                        <h2 className="fw-bold mb-2" style={{ fontSize: 32, color: '#14b8a6' }}>{selectedSubjectWithTitle.title || tutor.description || 'Online  classes for students island wide'}</h2>
                         <div className="d-flex flex-wrap align-items-center mb-3 gap-3">
                             <span><i className="bi bi-geo-alt me-1"></i> {location}</span>
                             <span><i className="bi bi-currency-rupee me-1"></i> Rs. {hourlyRate}/hour</span>

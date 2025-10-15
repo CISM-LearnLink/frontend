@@ -11,34 +11,6 @@ const SEND_API = `${import.meta.env.VITE_API_URL}/api/parent/message`;
 const TUTOR_PROFILE_API = `${import.meta.env.VITE_API_URL}/api/parent/tutor/`;
 const AVATAR_PLACEHOLDER = 'https://ui-avatars.com/api/?background=2DB8A1&color=fff&size=128&name=';
 
-
-// --- Reusable Components ---
-const AppHeader = () => (
-    <header className="bg-white shadow-sm sticky-top">
-        <nav className="container navbar navbar-expand-lg navbar-light">
-          <Link className="navbar-brand fw-bold" style={{ color: '#2DB8A1' }} to="/">LearnLink</Link>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav mx-auto">
-              <li className="nav-item"><Link className="nav-link" to="/">Home</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/companies">Companies</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/students">Students</Link></li>
-            </ul>
-            <Link to="/dashboard" className="btn btn-outline-secondary btn-sm">My Dashboard</Link>
-          </div>
-        </nav>
-    </header>
-);
-
-const AppFooter = () => (
-    <footer className="bg-dark text-white pt-5 pb-4 mt-5">
-        <div className="container text-center text-md-start">
-            <p className="text-center text-white-50 small">© 2025 LearnLink, Inc. All rights reserved.</p>
-        </div>
-    </footer>
-);
-// --- End Reusable Components ---
-
-
 const ParentMessages = () => {
   const { tutorId } = useParams();
   const [messages, setMessages] = useState([]);
@@ -47,15 +19,11 @@ const ParentMessages = () => {
   const [error, setError] = useState(null);
   const [newMessage, setNewMessage] = useState('');
   const [sending, setSending] = useState(false);
-  const messagesEndRef = useRef(null);
-
+  
   const parentUser = JSON.parse(localStorage.getItem('user'));
-  const parentId = parentUser?.id;
+  const parentId = parentUser?._id;
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
+  
   useEffect(() => {
     const fetchChatData = async () => {
         setLoading(true);
@@ -95,9 +63,7 @@ const ParentMessages = () => {
     }
   }, [tutorId]);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+ 
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -113,7 +79,6 @@ const ParentMessages = () => {
     };
     setMessages(prev => [...prev, tempMessage]);
     setNewMessage('');
-    scrollToBottom();
     
     try {
         const token = localStorage.getItem('token');
@@ -214,7 +179,7 @@ const ParentMessages = () => {
                             </div>
                         );
                     })}
-                    <div ref={messagesEndRef} />
+                    <div  />
                 </div>
 
                 <div className="card-footer bg-white p-3 border-top">

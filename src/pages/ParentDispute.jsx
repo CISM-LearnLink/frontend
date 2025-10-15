@@ -300,7 +300,7 @@ const ParentDispute = () => {
     setCreating(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(CREATE_URL, {
+      const res = await fetch(6, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify(form)

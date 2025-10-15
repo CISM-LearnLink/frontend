@@ -10,36 +10,6 @@ const PROFILE_API = `${import.meta.env.VITE_API_URL}/api/tutor/profile`;
 const DASHBOARD_API = `${import.meta.env.VITE_API_URL}/api/tutor/dashboard`;
 const AVATAR_PLACEHOLDER = 'https://ui-avatars.com/api/?background=2DB8A1&color=fff&size=128&name=';
 
-// --- Reusable Components ---
-const TutorHeader = ({ profile }) => (
-    <header className="bg-white shadow-sm sticky-top">
-        <nav className="container navbar navbar-expand-lg navbar-light">
-          <Link className="navbar-brand fw-bold" style={{ color: '#14b8a6' }} to="/tutor/dashboard">LearnLink</Link>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto align-items-center">
-              <li className="nav-item">
-                <Link className="nav-link" to="/tutor/bookings">My Bookings</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/tutor/messages">Messages</Link>
-              </li>
-              <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <img src={profile?.avatar || `${AVATAR_PLACEHOLDER}${profile?.name?.split(' ').join('+')}`} alt={profile?.name} className="rounded-circle me-2" style={{width: '35px', height: '35px'}} />
-                  {profile?.name}
-                </a>
-                <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                  <li><Link className="dropdown-item" to="/tutor-profile/">Edit Profile</Link></li>
-                  <li><Link className="dropdown-item" to="/tutor/availability">Set Availability</Link></li>
-                  <li><hr className="dropdown-divider" /></li>
-                  <li><a className="dropdown-item text-danger" href="/logout">Logout</a></li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </nav>
-    </header>
-);
 
 const StatCard = ({ icon, value, label, color }) => (
     <div className="col">

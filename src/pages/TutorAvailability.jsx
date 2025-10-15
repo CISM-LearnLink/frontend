@@ -11,27 +11,6 @@ const AVAIL_API = `${import.meta.env.VITE_API_URL}/api/tutor/availability`;
 
 const initialDays = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
 
-// --- Reusable Components ---
-const TutorHeader = ({ profileName }) => (
-    <header className="bg-white shadow-sm sticky-top">
-        <nav className="container navbar navbar-expand-lg navbar-light">
-          <Link className="navbar-brand fw-bold" style={{ color: '#14b8a6' }} to="/tutor/dashboard">LearnLink</Link>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto align-items-center">
-              <li className="nav-item">
-                <Link className="nav-link" to="/tutor/dashboard">Dashboard</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/tutor/profile/edit">
-                    <i className="bi bi-person-fill me-1"></i> {profileName || 'My Profile'}
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </nav>
-    </header>
-);
-// --- End Reusable Components ---
 
 function TutorAvailability() {
   // Each slot will now have an 'isAvailable' flag for the toggle switch

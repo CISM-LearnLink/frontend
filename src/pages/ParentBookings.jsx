@@ -13,6 +13,7 @@ const SUBJECTS_API = `${import.meta.env.VITE_API_URL}/api/subjects`;
 
 const ParentBookings = () => {
   const [bookings, setBookings] = useState([]);
+  console.log("Bookings:", bookings);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [subjects, setSubjects] = useState([]);
@@ -240,7 +241,7 @@ const ParentBookings = () => {
                         )}
                       {booking.status === 'completed' && !booking.reviewed && (
                         <div className="text-center mt-2">
-                          <Link to={`/parent/add-review/${booking._id}`} className="btn btn-outline-success btn-sm rounded-pill">Add Review</Link>
+                          <Link to={`/parent/tutor/${booking.tutorId._id}/subject/${booking.subject._id}`} className="btn btn-outline-success btn-sm rounded-pill">Add Review</Link>
                         </div>
                       )}
                     </div>

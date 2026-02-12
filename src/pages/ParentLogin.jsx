@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import client from '../api/client';
+import ReCAPTCHA from 'react-google-recaptcha';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import blobImg from '../assets/images/blob.png';
 import studentsImg from '../assets/images/students.png';
 
 const API_BASE_URL = `${import.meta.env.VITE_API_URL}`;
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
 function parseJwt(token) {
   try {
@@ -31,6 +33,10 @@ function ParentLogin({ setUser }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [showCaptcha, setShowCaptcha] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const recaptchaRef = useRef(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -38,12 +44,28 @@ function ParentLogin({ setUser }) {
     setLoading(true);
     setError('');
     setSuccess(false);
+
+    // Validate CAPTCHA if shown
+    if (showCaptcha && !recaptchaToken) {
+      setLoading(false);
+      setError('Please complete the CAPTCHA verification');
+      return;
+    }
+
     try {
-      const res = await client.post('/auth/login', {
+      const loginData = {
         email,
         password,
         role: 'parent'
-      });
+      };
+
+      // Add recaptcha token if CAPTCHA is shown
+      if (showCaptcha && recaptchaToken) {
+        loginData.recaptchaToken = recaptchaToken;
+      }
+
+      const res = await client.post('/auth/login', loginData);
+
       localStorage.setItem('token', res.data.token);
       const decoded = parseJwt(res.data.token);
       if (decoded && decoded.user) {
@@ -53,6 +75,9 @@ function ParentLogin({ setUser }) {
       setLoading(false);
       setSuccess(true);
 
+      // Reset failed attempts on successful login
+      setFailedAttempts(0);
+
       // Handle admin users - redirect to regular dashboard
       setTimeout(() => {
         navigate('/dashboard');
@@ -60,7 +85,26 @@ function ParentLogin({ setUser }) {
     } catch (err) {
       setLoading(false);
       setError(err.response?.data?.msg || 'Login failed');
+
+      // Increment failed attempts
+      const newFailedAttempts = failedAttempts + 1;
+      setFailedAttempts(newFailedAttempts);
+
+      // Show CAPTCHA after 2 failed attempts
+      if (newFailedAttempts >= 2) {
+        setShowCaptcha(true);
+      }
+
+      // Reset reCAPTCHA on error
+      if (recaptchaRef.current) {
+        recaptchaRef.current.reset();
+        setRecaptchaToken(null);
+      }
     }
+  };
+
+  const onRecaptchaChange = (token) => {
+    setRecaptchaToken(token);
   };
   useEffect(() => {
     // Check if Google redirected back with a token
@@ -112,6 +156,15 @@ function ParentLogin({ setUser }) {
           <div className="d-flex justify-content-end mb-3">
             <Link to="/forgot-password" className="text-info small fw-semibold text-decoration-none">Forgot password?</Link>
           </div>
+          {showCaptcha && RECAPTCHA_SITE_KEY && (
+            <div className="mb-3 d-flex justify-content-center">
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                sitekey={RECAPTCHA_SITE_KEY}
+                onChange={onRecaptchaChange}
+              />
+            </div>
+          )}
           {error && <div className="alert alert-danger py-2 small mb-2">{error}</div>}
           <button type="submit" className="btn w-100 fw-bold mb-3" style={{ background: '#14b8a6', color: '#fff', fontSize: 18, borderRadius: 8 }} disabled={loading}>{loading ? 'Signing in...' : 'SIGN IN'}</button>
           <div className="d-flex align-items-center my-3">

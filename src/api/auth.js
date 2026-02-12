@@ -1,13 +1,11 @@
-import axios from 'axios';
-
-const API_URL = '/api/auth';
+import client from './client';
 
 export const register = async (userData) => {
-  const res = await axios.post(`${API_URL}/register`, userData);
+  const res = await client.post('/auth/register', userData);
   return res.data;
 };
 
 export const login = async (userData) => {
-  const res = await axios.post(`${API_URL}/login`, userData);
+  const res = await client.post('/auth/login', userData);
   return res.data;
 }; 

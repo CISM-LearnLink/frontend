@@ -1,24 +1,18 @@
-import axios from 'axios';
+import client from './client';
 
-const API_URL = '/api/bookings';
+const API_URL = '/bookings';
 
-export const getBookings = async (token) => {
-  const res = await axios.get(API_URL, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+export const getBookings = async () => {
+  const res = await client.get(API_URL);
   return res.data;
 };
 
-export const createBooking = async (bookingData, token) => {
-  const res = await axios.post(API_URL, bookingData, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+export const createBooking = async (bookingData) => {
+  const res = await client.post(API_URL, bookingData);
   return res.data;
 };
 
-export const getBookingById = async (id, token) => {
-  const res = await axios.get(`${API_URL}/${id}`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+export const getBookingById = async (id) => {
+  const res = await client.get(`${API_URL}/${id}`);
   return res.data;
 }; 

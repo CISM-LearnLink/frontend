@@ -1,6 +1,6 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import client from '../api/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import blobImg from '../assets/images/blob.png';
@@ -12,7 +12,7 @@ function parseJwt(token) {
   try {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
       return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
     return JSON.parse(jsonPayload);
@@ -39,12 +39,10 @@ function ParentLogin({ setUser }) {
     setError('');
     setSuccess(false);
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+      const res = await client.post('/auth/login', {
         email,
         password,
         role: 'parent'
-      }, {
-        withCredentials: true
       });
       localStorage.setItem('token', res.data.token);
       const decoded = parseJwt(res.data.token);
@@ -54,7 +52,7 @@ function ParentLogin({ setUser }) {
       }
       setLoading(false);
       setSuccess(true);
-      
+
       // Handle admin users - redirect to regular dashboard
       setTimeout(() => {
         navigate('/dashboard');
@@ -65,33 +63,33 @@ function ParentLogin({ setUser }) {
     }
   };
   useEffect(() => {
-  // Check if Google redirected back with a token
-  const urlParams = new URLSearchParams(window.location.search);
-  const token = urlParams.get('token');
-  const error = urlParams.get('error');
-  
-  if (token) {
-    setLoading(true);
-    localStorage.setItem('token', token);
-    
-    // You can either decode the token or fetch user data from backend
-    const decoded = parseJwt(token);
-    if (decoded && decoded.userId) {
-      // Simple approach: just use data from the token
-      localStorage.setItem('user', JSON.stringify(decoded));
-      if (setUser) setUser(decoded);
-      
-      // Redirect to dashboard
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 500);
+    // Check if Google redirected back with a token
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const error = urlParams.get('error');
+
+    if (token) {
+      setLoading(true);
+      localStorage.setItem('token', token);
+
+      // You can either decode the token or fetch user data from backend
+      const decoded = parseJwt(token);
+      if (decoded && decoded.userId) {
+        // Simple approach: just use data from the token
+        localStorage.setItem('user', JSON.stringify(decoded));
+        if (setUser) setUser(decoded);
+
+        // Redirect to dashboard
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 500);
+      }
     }
-  }
-  
-  if (error) {
-    setError('Google login failed. Please try again.');
-  }
-}, [navigate, setUser]);
+
+    if (error) {
+      setError('Google login failed. Please try again.');
+    }
+  }, [navigate, setUser]);
   return (
     <div className="login-root" style={{ minHeight: '100vh', background: '#fff', display: 'flex' }}>
       {/* Left Side: blob.png as background, students.png centered */}

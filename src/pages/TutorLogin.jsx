@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import client from '../api/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import blobImg from '../assets/images/blob.png';
@@ -13,7 +13,7 @@ function parseJwt(token) {
   try {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
       return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
     return JSON.parse(jsonPayload);
@@ -36,12 +36,10 @@ function TutorLogin({ setUser }) {
     setError('');
     setSuccess(false);
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+      const res = await client.post('/auth/login', {
         email,
         password,
         role: 'tutor'
-      }, {
-        withCredentials: true
       });
       localStorage.setItem('token', res.data.token);
       const decoded = parseJwt(res.data.token);
@@ -51,7 +49,7 @@ function TutorLogin({ setUser }) {
       }
       setLoading(false);
       setSuccess(true);
-      
+
       // Handle admin users - redirect to regular dashboard
       setTimeout(() => {
         navigate('/dashboard');

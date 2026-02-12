@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import client from '../api/client';
 import Swal from 'sweetalert2';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -283,22 +284,18 @@ const ParentDashboard = ({ user }) => {
             setInitialLoading(true);
             setInitialError(null);
             try {
-                const token = localStorage.getItem('token');
-                const headers = { 'Authorization': token ? `Bearer ${token}` : '' };
-
                 const [dashboardRes, subjectsRes, latestRes, topRes] = await Promise.all([
-                    fetch(`${import.meta.env.VITE_API_URL}/api/parent/dashboard`, { headers }),
-                    fetch(`${import.meta.env.VITE_API_URL}/api/parent/subjects-with-counts`, { headers }),
-                    fetch(`${import.meta.env.VITE_API_URL}/api/parent/search-tutors?limit=4&sortBy=date`, { headers }),
-                    fetch(`${import.meta.env.VITE_API_URL}/api/parent/search-tutors?limit=4&sortBy=rating`, { headers })
-
+                    client.get('/parent/dashboard'),
+                    client.get('/parent/subjects-with-counts'),
+                    client.get('/parent/search-tutors?limit=4&sortBy=date'),
+                    client.get('/parent/search-tutors?limit=4&sortBy=rating')
                 ]);
 
-                const dashboardData = await dashboardRes.json();
-                const subjectsData = await subjectsRes.json();
-                const latestData = await latestRes.json();
+                const dashboardData = dashboardRes.data;
+                const subjectsData = subjectsRes.data;
+                const latestData = latestRes.data;
                 console.log("latest data", latestData);
-                const topData = await topRes.json();
+                const topData = topRes.data;
 
                 if (dashboardData.success) {
                     const allTutors = dashboardData.data.recommendedTutors || [];
@@ -335,11 +332,8 @@ const ParentDashboard = ({ user }) => {
     useEffect(() => {
         const fetchBookmarks = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/api/parent/bookmarks`, {
-                    headers: { 'Authorization': token ? `Bearer ${token}` : '' },
-                });
-                const data = await res.json();
+                const res = await client.get('/parent/bookmarks');
+                const data = res.data;
                 if (data.success) setBookmarks(data.data || []);
             } catch (err) { }
         };
@@ -358,13 +352,10 @@ const ParentDashboard = ({ user }) => {
             if (filterLocation) params.append('location', filterLocation);
             if (filterSubject) params.append('subject', filterSubject);
             if (filterRating) params.append('rating', filterRating);
-            if (minRate) params.append('minRate', minRate);
             if (maxRate) params.append('maxRate', maxRate);
             params.append('limit', 50);
-            const res = await fetch(`${API_URL}?${params.toString()}`, {
-                headers: { 'Authorization': token ? `Bearer ${token}` : '' },
-            });
-            const data = await res.json();
+            const res = await client.get(`${API_URL}?${params.toString()}`);
+            const data = res.data;
             if (data.success) {
                 setSearchedTutors(data.data.tutors);
             } else {
@@ -448,24 +439,14 @@ const ParentDashboard = ({ user }) => {
     // Toggle bookmark
     const handleBookmark = async (tutorId, subjectId) => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/parent/bookmark`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': token ? `Bearer ${token}` : '',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ tutorId, subjectId })
-            });
+            const response = await client.post('/parent/bookmark', { tutorId, subjectId });
 
-            const data = await response.json();
+            const data = response.data;
 
             if (data.success) {
                 // Refresh bookmarks
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/api/parent/bookmarks`, {
-                    headers: { 'Authorization': token ? `Bearer ${token}` : '' },
-                });
-                const bookmarksData = await res.json();
+                const res = await client.get('/parent/bookmarks');
+                const bookmarksData = res.data;
                 if (bookmarksData.success) {
                     setBookmarks(bookmarksData.data || []);
 

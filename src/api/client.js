@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// Create axios instance
+
 const client = axios.create({
-    baseURL: 'http://localhost:5001/api', // Adjust if needed
+    baseURL: 'http://localhost:5001/api',
     withCredentials: true, // Important for cookies (refresh token)
     headers: {
         'Content-Type': 'application/json',

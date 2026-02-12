@@ -1,17 +1,13 @@
-import axios from 'axios';
+import client from './client';
 
-const API_URL = '/api/users';
+const API_URL = '/users';
 
-export const getUserById = async (id, token) => {
-  const res = await axios.get(`${API_URL}/${id}`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+export const getUserById = async (id) => {
+  const res = await client.get(`${API_URL}/${id}`);
   return res.data;
 };
 
-export const getAllUsers = async (token) => {
-  const res = await axios.get(API_URL, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+export const getAllUsers = async () => {
+  const res = await client.get(API_URL);
   return res.data;
 }; 

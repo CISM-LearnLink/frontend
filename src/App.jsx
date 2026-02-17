@@ -42,6 +42,8 @@ import ParentProfile from './pages/ParentProfile';
 import Notifications from './pages/Notifications';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import client from './api/client';
+
 function App() {
   const [user, setUser] = useState(() => {
     try {
@@ -64,13 +66,18 @@ function App() {
     return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await client.post('/auth/logout');
+    } catch (e) {
+      console.error('Logout failed:', e);
+    }
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
     window.location.href = '/';
   };
-  
+
 
   return (
     <Router>
